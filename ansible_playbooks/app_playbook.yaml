@@ -9,13 +9,17 @@
     synchronize:
       src: /home/ubuntu/app
       dest: /home/ubuntu/
+# find IP address needed
+- hosts: localhost
+  connection: local
+  tasks:
+    - debug: var=ansible_all_ipv4_addresses
+    - debug: var=ansible_default_ipv4.address
 
 - name: a play to install packages needed
   hosts: default
   # This is targeting host_a and is used to define where this play will run
   become: true
-  vars:
-    DB_HOST: 172.31.46.228
   # Become is used as the root permission to perform tasks that may require admin access
   tasks:
   # This block updates and upgrades all the packages
@@ -54,27 +58,6 @@
       global: yes
       production: yes
 
-  # This block will set the DB_HOST
-  - name: set db host as global variable
-    become: true
-    shell: |
-        export DB_HOST={{ DB_HOST }}
-        sed -i '/export DB_HOST=/d' .bashrc
-        printf '\nexport DB_HOST={{ DB_HOST }}' >> .bashrc
-    args:
-      chdir: /home/ubuntu
-
-  # This block will start the app with pm2
-  - name: start app.js
-    become: true
-    become_user: ubuntu
-    shell: 
-      cmd: |
-        pm2 delete all
-        sudo npm install
-        pm2 start app.js -f
-      chdir: /home/ubuntu/app
-
 - name: a play to set up the reverse proxy
   hosts: default
   become: true
@@ -103,14 +86,4 @@
       service:
         name: nginx
         state: restarted
-    - name: fix_nginx_bug
-      become: true
-      become_user: root
-      shell: |
-        sudo systemctl stop nginx
-        sudo mkdir /etc/systemd/system/nginx.service.d
-        printf "[Service]\nExecStartPost=/bin/sleep 0.1\n" > /home/ubuntu/override.conf
-        sudo cp /home/ubuntu/override.conf /etc/systemd/system/nginx.service.d/override.conf
-        sudo systemctl daemon-reload
-        sudo systemctl start nginx
-
+        
