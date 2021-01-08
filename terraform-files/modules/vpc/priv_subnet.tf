@@ -1,5 +1,5 @@
 resource "aws_subnet" "private_subnet" {
-  		vpc_id = var.vpc_id
+  		vpc_id = aws_vpc.vpc.id
  		cidr_block = var.cidr["priv_subnet"]
   		map_public_ip_on_launch = "true"
   		tags = {
@@ -8,7 +8,7 @@ resource "aws_subnet" "private_subnet" {
 }
 
 resource "aws_network_acl" "private_nacl" {
-		vpc_id = var.vpc_id
+		vpc_id = aws_vpc.vpc.id
 		subnet_ids = [aws_subnet.private_subnet.id]
 		ingress {
 			protocol    = "tcp"

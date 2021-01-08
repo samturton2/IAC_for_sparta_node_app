@@ -1,5 +1,5 @@
 resource "aws_subnet" "public_subnet" {
-  		vpc_id = var.vpc_id
+  		vpc_id = aws_vpc.vpc.id
  		cidr_block = var.cidr["pub_subnet"]
   		map_public_ip_on_launch = "true"
   		tags = {
@@ -8,7 +8,7 @@ resource "aws_subnet" "public_subnet" {
 }
 
 resource "aws_route_table" "route-table" {
-  		vpc_id = var.vpc_id
+  		vpc_id = aws_vpc.vpc.id
 		route {
       		cidr_block = "0.0.0.0/0"
       		gateway_id = aws_internet_gateway.igw.id
@@ -24,7 +24,7 @@ resource "aws_route_table_association" "rta_public_subnet" {
 }
 
 resource "aws_network_acl" "puclic_nacl" {
-		vpc_id = var.vpc_id
+		vpc_id = aws_vpc.vpc.id
 		subnet_ids = [aws_subnet.public_subnet.id]
 		ingress {
 			protocol    = "tcp"

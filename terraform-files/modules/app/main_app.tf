@@ -13,8 +13,8 @@ resource "aws_instance" "nodejs_instance"{
 		]
 		user_data = <<-EOF
 
-			export DB_HOST=${aws_instance.mongodb_instance.private_ip}
-        	printf '\nexport DB_HOST=${aws_instance.mongodb_instance.private_ip}' >> ~/.bashrc
+			export DB_HOST=${var.db_ip}
+        	printf '\nexport DB_HOST=${var.db_ip}' >> ~/.bashrc
         	
         	sudo systemctl stop nginx
        		sudo mkdir /etc/systemd/system/nginx.service.d

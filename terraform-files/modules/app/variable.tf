@@ -11,3 +11,9 @@ variable "cidr" {
 		"my_ip" = "109.152.98.234/32"
 	}
 }
+
+variable "pub_sub" {} 
+
+variable "pub_sg" {}
+
+variable "db_ip" {}

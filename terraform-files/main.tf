@@ -8,8 +8,6 @@ provider "aws" {
 
 module "vpc" {
 	source = "./modules/vpc"
-
-
 }
 
 module "sg" {
@@ -20,9 +18,16 @@ module "sg" {
 
 module "app" {
 	source = "./modules/app"
+
+	pub_sub = module.vpc.pub_sub
+	pub_sg = module.sg.pub_sg
+	db_ip = module.db.db_ip
 }
 
 module "db" {
 	source = "./modules/db"
+
+	priv_sub = module.vpc.priv_sub 
+	priv_sg = module.sg.priv_sg
 }
 
