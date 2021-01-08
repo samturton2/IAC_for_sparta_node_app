@@ -1,6 +1,6 @@
 resource "aws_subnet" "public_subnet" {
   		vpc_id = aws_vpc.vpc.id
- 		cidr_block = var.cidr["pub_subnet"]
+ 		  cidr_block = var.cidr["pub_subnet"]
   		map_public_ip_on_launch = "true"
   		tags = {
     		Name = "eng74-sam-terraform-public-subnet"
