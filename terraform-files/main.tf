@@ -19,6 +19,7 @@ module "sg" {
 module "app" {
 	source = "./modules/app"
 
+	app_ami = var.app_ami
 	pub_sub = module.vpc.pub_sub
 	pub_sg = module.sg.pub_sg
 	db_ip = module.db.db_ip
@@ -31,3 +32,20 @@ module "db" {
 	priv_sg = module.sg.priv_sg
 }
 
+module "loadbalancer" {
+	source = "./modules/loadbalancer"
+
+	lb_type = "network"
+	subnet = module.vpc.pub_sub
+	vpc_id = module.vpc.vpc_id
+}
+
+module "launch_config" {
+	source = "./modules/launchconfig"
+
+	app_ami = var.app_ami
+	db_ip = module.db.db_ip
+	pub_sg = module.sg.pub_sg
+	pub_sub = module.vpc.pub_sub
+	lb_name = module.loadbalancer.lb_name
+}
